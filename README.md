@@ -23,6 +23,13 @@ This code is to create a proveably random smart contract lottery.
    2. Forked testnet
    3. Forked mainnet
 
+```bash
+source .env
+cast wallet import account --interactive
+cast wallet list
+forge script script/Interactions.s.sol:FundSubscription --rpc-url $SEPOLIA --account sepolia --broadcast
+```
+
 ----------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------
 

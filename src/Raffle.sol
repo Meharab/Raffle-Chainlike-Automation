@@ -39,9 +39,14 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
     /**
      * Errors
      */
-    error Raffle_NotEnoughEthSent();
+    error Raffle__NotEnoughEthSent();
     error Raffle__TransferFailed();
     error Raffle__RaffleNotOpen();
+    error Raffle__UpkeepNotNeeded(
+        uint256 currentBalance,
+        uint256 numPlayers,
+        uint256 raffleState
+    );
 
     // Type declarations
     enum RaffleState {
@@ -72,11 +77,6 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
      */
     event EnteredRaffle(address indexed player);
     event PickedWinner(address winner);
-    error Raffle__UpkeepNotNeeded(
-        uint256 currentBalance,
-        uint256 numPlayers,
-        uint256 raffleState
-    );
 
     constructor(
         uint256 entranceFee,
@@ -93,12 +93,12 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
         i_callbackGasLimit = callbackGasLimit;
 
         s_lastTimeStamp = block.timestamp;
-        s_raffleState = RaffleState.OPEN;
+        s_raffleState = RaffleState.OPEN; // start as open
     }
 
     function enterRaffle() external payable {
         // require(msg.value >= i_entranceFee, "Not enough ETH sent!");
-        if (msg.value < i_entranceFee) revert Raffle_NotEnoughEthSent();
+        if (msg.value < i_entranceFee) revert Raffle__NotEnoughEthSent();
         if (s_raffleState != RaffleState.OPEN) revert Raffle__RaffleNotOpen(); // If not open you don't enter.
 
         s_players.push(payable(msg.sender));
@@ -176,5 +176,13 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
      */
     function getEntranceFee() external view returns (uint256) {
         return i_entranceFee;
+    }
+
+    function getRaffleState() external view returns (RaffleState) {
+        return s_raffleState;
+    }
+
+    function getPlayer(uint256 indexOfPlayer) external view returns (address) {
+        return s_players[indexOfPlayer];
     }
 }
