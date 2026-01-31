@@ -1,3 +1,6 @@
+> We are engineers so we do as much work as possible to be as lazy as possible - Patrick Collins
+----------------------------------------------------------------------------------
+
 # Proveably Random Raffle Contracts
 ​
 ## About
@@ -11,9 +14,15 @@ This code is to create a proveably random smart contract lottery.
 3. Chainlink VRF should generate a provably random number.
 4. Chainlink Automation should trigger the lottery draw regularly.
 
-> we are engineers so we do as much work as possible to be as lazy as possible - patrick collins
+## Tests!
 
-----------------------------------------------------------------------------------
+1. Write deploy scripts
+   1. Note, this will not work on zksync
+2. Write tests
+   1. Local chain
+   2. Forked testnet
+   3. Forked mainnet
+
 ----------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------
 
