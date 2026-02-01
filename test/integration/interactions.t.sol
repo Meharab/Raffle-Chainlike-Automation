@@ -8,3 +8,6 @@
  * Stateless fuzz tests - Randomized inputs without state changes
  * Formal verification - Mathematical proofs to verify correctness
  */
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
