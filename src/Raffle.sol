@@ -77,6 +77,7 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
      */
     event EnteredRaffle(address indexed player);
     event PickedWinner(address winner);
+    event RequestedRaffleWinner(uint256 indexed requestId);
 
     constructor(
         uint256 entranceFee,
@@ -131,7 +132,7 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
         (bool upkeepNeeded, ) = checkUpkeep("");
         // require(upkeepNeeded, "Upkeep not needed");
         // check to see if enough time has passed
-        if (block.timestamp - s_lastTimeStamp < i_interval) {
+        if (!upkeepNeeded) {
             revert Raffle__UpkeepNotNeeded(
                 address(this).balance,
                 s_players.length,
@@ -150,10 +151,12 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
         });
 
         uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
+
+        emit RequestedRaffleWinner(requestId);
     }
 
     // CEI: Checks-Effects-Interactions
-    function fulfillRandomWords(uint256 _requestId, uint256[] calldata _randomWords) internal override {
+    function fulfillRandomWords(uint256 /*_requestId*/, uint256[] calldata _randomWords) internal override {
         // Checks
         // Effects
         uint256 indexOfWinner = _randomWords[0] % s_players.length;
@@ -184,5 +187,17 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
 
     function getPlayer(uint256 indexOfPlayer) external view returns (address) {
         return s_players[indexOfPlayer];
+    }
+
+    function getRecentWinner() public view returns (address) {
+        return s_recentWinner;
+    }
+    
+    function getNumberOfPlayers() public view returns (uint256) {
+        return s_players.length;
+    }
+    
+    function getLastTimeStamp() public view returns (uint256) {
+        return s_lastTimeStamp;
     }
 }

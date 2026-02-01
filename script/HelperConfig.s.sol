@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import {Script} from "forge-std/Script.sol";
+import {Script, console} from "forge-std/Script.sol";
 import {VRFCoordinatorV2_5Mock} from "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 import {LinkToken} from "test/mocks/LinkToken.sol";
 
@@ -26,6 +26,7 @@ contract HelperConfig is CodeConstants, Script {
         uint32 callbackGasLimit;
         uint256 subscriptionId;
         address link;
+        address account;
     }
 
     NetworkConfig public localNetworkConfig;
@@ -46,6 +47,7 @@ contract HelperConfig is CodeConstants, Script {
     }
 
     function getConfig() public returns (NetworkConfig memory) {
+        console.log("HelperConfig.s - Subscription ID:", getConfigByChainId(block.chainid).subscriptionId);
         return getConfigByChainId(block.chainid);
     }
 
@@ -71,8 +73,9 @@ contract HelperConfig is CodeConstants, Script {
             // gasLane value doesn't matter.
             gasLane: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
             callbackGasLimit: 500_000,
-            subscriptionId: 0,
-            link: address(linkToken)
+            subscriptionId: 0, // script will create a subscription
+            link: address(linkToken),
+            account: 0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38
         });
     }
 
@@ -84,7 +87,8 @@ contract HelperConfig is CodeConstants, Script {
             gasLane: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
             callbackGasLimit: 500000, // 500,000 gas
             subscriptionId: 20754675458119495485073855082968386476599663373639752400642952203878427767022,
-            link: 0x779877A7B0D9E8603169DdbD7836e478b4624789
+            link: 0x779877A7B0D9E8603169DdbD7836e478b4624789,
+            account: 0x55F710a5509f4a8a8fE8a41dF476e51daD401454
         });
     }
 }
